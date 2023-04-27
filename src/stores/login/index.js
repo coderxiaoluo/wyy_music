@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getLogin, getCreateUser, getQrlogin, getStatus, getUserDetail } from "@/service"
+import { getLogin, getCreateUser, getQrlogin, getStatus, getUserDetail, getUserLevel } from "@/service"
 import local from "../../utils/local";
 
 export const userLoginStore = defineStore("login", {
@@ -8,14 +8,17 @@ export const userLoginStore = defineStore("login", {
     qrimg: {},
     timers: null,
     isShow: false,
-    account: {}
+    isPage: true,
+    cookie: local.getLocalCache("cookie") ?? "",
+    account: local.getLocalCache("account") ?? {},
+    profile: local.getLocalCache("profile") ?? {},
+    detail: {}
   }),
   actions: {
     async getLoginCodeQR() {
       const results = await getLogin()
       if (!results.data) return
       this.unikey = results.data.unikey
-      // local.setLocalCache("unikey", results.data.unikey)
     },
     async getCreateUserAction(id) {
       const results = await getCreateUser(id)
@@ -28,9 +31,10 @@ export const userLoginStore = defineStore("login", {
         const results = await getQrlogin(this.unikey, new Date().getTime())
         // 登录成功
         if (results.code === 803) {
+          local.setLocalCache("cookie", results.cookie)
+          this.cookie = results.cookie
           this.isShow = false
           this.getStatusActions()
-          console.log(results)
           clearInterval(this.timers)
           return
         }
@@ -45,15 +49,20 @@ export const userLoginStore = defineStore("login", {
     // 
     // 获取用户id
     async getStatusActions() {
-      const results = await getStatus()
-      console.log(results)
+      const results = await getStatus(this.cookie)
       local.setLocalCache("account", results.data.account)
-      this.account = results.data.account
+      local.setLocalCache("profile", results.data.profile)
       // 获取用户详细信息
-      // this.getUserDetailActions(results.data.account.id)
+      this.getUserDetailActions(results.data.account.id)
     },
+    // 获取用户详情
     async getUserDetailActions(id) {
       const results = await getUserDetail(id)
+      console.log(results)
+    },
+    async getUserLevelActions() {
+      const results = await getUserLevel(this.cookie)
+      console.log(results)
     }
   },
   getters: {

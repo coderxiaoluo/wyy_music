@@ -22,8 +22,14 @@ export function getQrlogin(key, time) {
 }
 
 // 登录状态 /login/status
-export function getStatus() {
+export function getStatus(cooker) {
   return lRequest.get({
-    url: "/login/status"
+    url: "/login/status",
+    params: {
+      cookie: cooker,
+      timestamp: new Date().getTime(),
+      withCredentials: true
+    }
   })
 }
+
