@@ -1,3 +1,15 @@
 :root {
   --background-color: #ec4141;
 }
+
+body {
+  font-size: 14px;
+}
+
+.icon {
+  width: 2em;
+  height: 2em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}

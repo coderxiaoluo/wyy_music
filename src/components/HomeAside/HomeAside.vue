@@ -5,9 +5,14 @@
         <el-icon class="icon"><Service /></el-icon>
         <span>发现音乐</span>
       </li>
-      <li></li>
-      <li></li>
-      <li></li>
+      <li>
+        <el-icon class="icon"><Service /></el-icon>
+        <span>发现音乐</span>
+      </li>
+      <li>
+        <el-icon class="icon"><Service /></el-icon>
+        <span>发现音乐</span>
+      </li>
     </ul>
   </div>
 </template>
@@ -28,9 +33,11 @@ ul {
 
   li {
     height: 30px;
+    font-size: 14px;
     text-align: left;
     padding-left: 20px;
     line-height: 30px;
+    margin: 20px 0;
     .icon {
       vertical-align: middle;
     }

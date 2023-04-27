@@ -30,7 +30,7 @@
         <el-avatar class="userFilled" :icon="UserFilled" />
       </div>
       <ul>
-        <li>未登录</li>
+        <li @click="handleLoginClick">未登录</li>
         <li>
           <el-icon><Moon /></el-icon>
         </li>
@@ -42,6 +42,85 @@
         </li>
       </ul>
     </div>
+
+    <!-- 扫码登录 -->
+    <div class="login-box" v-if="isShow">
+      <div class="page1" v-show="isPage">
+        <h3 class="text">扫码登录</h3>
+        <img :src="qrimg.qrimg" alt="登录" />
+        <p>使用 <span class="wyytext">网易云音乐APP</span> 扫码登录</p>
+        <p class="bottomtext" @click="handleTelClick">选择其它登录模式&gt;</p>
+        <svg @click="exitClick" class="btns" aria-hidden="true">
+          <use xlink:href="#icon-cuowu"></use>
+        </svg>
+      </div>
+      <div class="page2" v-show="!isPage">
+        <div class="top">
+          <img
+            @click="handelImgePageClick"
+            class="topimg"
+            src="@/assets/img/qicon.png"
+            alt=""
+          />
+          <p class="textlogin">扫码登录更安全</p>
+        </div>
+        <img class="loginimg" src="@/assets/img/test.jpg" alt="" />
+        <div class="from">
+          <el-form :model="shouFrom">
+            <el-form-item label-width="30px">
+              <el-input v-model="shouFrom.phone" placeholder="请输入手机号">
+                <template #prefix>
+                  <el-icon><Cellphone /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label-width="30px">
+              <el-input
+                v-model="shouFrom.password"
+                show-password
+                placeholder="请输入密码"
+              >
+                <template #prefix>
+                  <el-icon><Lock /></el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-form>
+          <div class="fromchecked">
+            <el-checkbox
+              v-model="checked1"
+              label="自动登录"
+              size="large"
+              class="checkeds"
+              text-color="#ec4141"
+            />
+            <p>
+              <el-text class="mx-1" type="primary">忘记密码</el-text>
+              <span class="span_">|</span>
+              <el-text class="mx-1" type="primary">验证码登录</el-text>
+            </p>
+          </div>
+        </div>
+        <el-button class="buttons" type="primary" color="#ec4141" size="large"
+          >登录</el-button
+        >
+        <div class="icons">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-QQ"></use>
+          </svg>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-weixin"></use>
+          </svg>
+
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-shejiaotubiao-42"></use>
+          </svg>
+        </div>
+        <svg @click="exitClick" class="btns" aria-hidden="true">
+          <use class="use" xlink:href="#icon-cuowu"></use>
+        </svg>
+      </div>
+    </div>
   </div>
 </template>
 <script setup>
@@ -49,16 +128,57 @@ import {
   ArrowLeft,
   ArrowRight,
   Calendar,
-  Search,
+  Cellphone,
   UserFilled,
+  Search,
   Message,
   Setting,
+  Lock,
   Moon,
 } from "@element-plus/icons-vue";
+import { storeToRefs } from "pinia";
 import { ref, toRefs, reactive } from "vue";
+import { userLoginStore } from "@/stores/login/index";
+import local from "@/utils/local";
+
+const value = ref("");
+const loginStores = userLoginStore();
 
 // 搜索
 const searchInp = ref("");
+
+// 获取登录图片
+const { qrimg, unikey, timers, isShow } = storeToRefs(loginStores);
+loginStores.getLoginCodeQR();
+// 扫码登录
+const handleLoginClick = () => {
+  loginStores.getCreateUserAction(unikey.value);
+  loginStores.getQrloginActions();
+  isShow.value = true;
+};
+// 退出登录
+const exitClick = () => {
+  clearInterval(timers.value);
+  isShow.value = false;
+};
+
+// 切换手机登录
+const isPage = ref(true);
+const handleTelClick = () => {
+  clearInterval(timers.value);
+  isPage.value = !isPage.value;
+};
+
+const shouFrom = reactive({
+  phone: "",
+  password: "",
+});
+const checked1 = ref(false);
+
+// 切换为扫码登录
+const handelImgePageClick = () => {
+  isPage.value = !isPage.value;
+};
 </script>
 
 <style lang="less" scoped>
@@ -161,6 +281,116 @@ h1 {
       font-size: 20px;
       margin-left: 20px;
     }
+  }
+}
+
+.login-box {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  box-shadow: 4px 4px 4px 4px #e7e5e5;
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff;
+  padding: 20px;
+  text-align: center;
+  color: #000;
+
+  .text {
+    text-align: center;
+    font-size: 30px;
+    margin: 30px 0;
+  }
+  img {
+    text-align: center;
+    margin-left: -4px;
+  }
+  .wyytext {
+    color: rgb(21, 93, 209);
+  }
+  .bottomtext {
+    font-size: 12px;
+    margin-top: 80px;
+    cursor: pointer;
+  }
+  .btns {
+    display: inline-block;
+    position: absolute;
+    right: 2px;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: #e3dede;
+
+    use {
+      color: #e3dede;
+    }
+  }
+}
+
+.page2 {
+  position: relative;
+
+  .top {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    display: flex;
+
+    .topimg {
+      position: absolute;
+      left: -15px;
+      top: -20px;
+      width: 50px;
+      transform: rotate(180deg);
+      cursor: pointer;
+    }
+    .textlogin {
+      margin-left: 20px;
+      color: #fff;
+      font-size: 12px;
+      background-color: #373636;
+      padding: 5px;
+    }
+  }
+  .loginimg {
+    width: 50px;
+    margin-top: 40px;
+  }
+}
+.from {
+  margin-top: 20px;
+}
+.fromchecked {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0px 0px 31px;
+
+  .checkeds {
+    color: #ec4141;
+  }
+  .mx-1 {
+    color: #ec4141;
+  }
+  .span_ {
+    display: inline-block;
+    color: #ccc;
+    margin: 0 5px;
+  }
+}
+
+.buttons {
+  margin-top: 20px;
+  width: 220px;
+}
+.icons {
+  margin-top: 20px;
+  .icon {
+    margin: 0 10px;
   }
 }
 </style>
