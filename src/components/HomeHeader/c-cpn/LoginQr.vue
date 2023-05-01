@@ -23,7 +23,6 @@ const loginStores = userLoginStore();
 
 // 获取登录图片
 const { qrimg, timers, isShow, isPage } = storeToRefs(loginStores);
-loginStores.getLoginCodeQR();
 
 // 切换手机登录
 const handleTelClick = () => {
@@ -46,10 +45,10 @@ const exitClick = () => {
   box-shadow: 4px 4px 4px 4px #e7e5e5;
   width: 300px;
   height: 400px;
-  background-color: #ffffff;
+  background-color: var(--color-white-primary);
   padding: 20px;
   text-align: center;
-  color: #000;
+  color: var(--color-black-primary);
 
   .text {
     text-align: center;

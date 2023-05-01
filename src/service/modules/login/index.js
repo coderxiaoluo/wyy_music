@@ -21,7 +21,7 @@ export function getQrlogin(key, time) {
   })
 }
 
-// 登录状态 /login/status
+// 登录状态 获取id
 export function getStatus(cooker) {
   return lRequest.get({
     url: "/login/status",

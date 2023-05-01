@@ -7,11 +7,15 @@
       </li>
       <li>
         <el-icon class="icon"><Service /></el-icon>
-        <span>发现音乐</span>
+        <span>视频</span>
       </li>
       <li>
         <el-icon class="icon"><Service /></el-icon>
-        <span>发现音乐</span>
+        <span>收藏</span>
+      </li>
+      <li>
+        <el-icon class="icon"><Service /></el-icon>
+        <span>每日推荐</span>
       </li>
     </ul>
   </div>

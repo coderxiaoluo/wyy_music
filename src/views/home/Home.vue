@@ -11,8 +11,10 @@
           <HomeAside></HomeAside>
         </el-aside>
         <el-container>
-          <el-main>Main</el-main>
-          <el-footer>Footer</el-footer>
+          <el-main>
+            <TabBar />
+            <router-view></router-view>
+          </el-main>
         </el-container>
       </el-container>
     </el-container>
@@ -22,6 +24,13 @@
 <script setup>
 import HomeHeader from "@/components/HomeHeader/HomeHeader.vue";
 import HomeAside from "../../components/HomeAside/HomeAside.vue";
+import TabBar from "../../components/TabBar/TabBar.vue";
+import { useRecommendStore } from "@/stores/recommend";
+const recommendStore = useRecommendStore();
+// 轮播图
+recommendStore.getBannerDataAction();
+// 推荐歌单
+recommendStore.getRelatedDataListAction();
 </script>
 
 <style lang="less" scoped>

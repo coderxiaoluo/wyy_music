@@ -61,7 +61,7 @@ h1 {
   .btn {
     background-color: rgba(0, 0, 0, 0.1);
     border: none;
-    color: #fff;
+    color: var(--color-white-primary);
     border-radius: 50%;
     font-size: 16px;
   }

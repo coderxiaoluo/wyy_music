@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import { getLogin, getCreateUser, getQrlogin, getStatus, getUserDetail, getUserLevel } from "@/service"
+import { getLogin, getCreateUser, getQrlogin, getStatus } from "@/service"
 import local from "../../utils/local";
+import { ElMessage } from 'element-plus'
 
 export const userLoginStore = defineStore("login", {
   state: () => ({
@@ -9,6 +10,7 @@ export const userLoginStore = defineStore("login", {
     timers: null,
     isShow: false,
     isPage: true,
+    // cookie
     cookie: local.getLocalCache("cookie") ?? "",
     account: local.getLocalCache("account") ?? {},
     profile: local.getLocalCache("profile") ?? {},
@@ -31,10 +33,15 @@ export const userLoginStore = defineStore("login", {
         const results = await getQrlogin(this.unikey, new Date().getTime())
         // 登录成功
         if (results.code === 803) {
+          // 存储cookie
           local.setLocalCache("cookie", results.cookie)
           this.cookie = results.cookie
           this.isShow = false
+          // 提示
+          ElMessage('登录成功!')
+          // 获取用户id
           this.getStatusActions()
+          // 停止请求
           clearInterval(this.timers)
           return
         }
@@ -50,20 +57,14 @@ export const userLoginStore = defineStore("login", {
     // 获取用户id
     async getStatusActions() {
       const results = await getStatus(this.cookie)
+      // 存储用户id
+      this.profile = results.data.profile
+      this.account = results.data.account
+      //  持久化存储
       local.setLocalCache("account", results.data.account)
       local.setLocalCache("profile", results.data.profile)
-      // 获取用户详细信息
-      this.getUserDetailActions(results.data.account.id)
     },
-    // 获取用户详情
-    async getUserDetailActions(id) {
-      const results = await getUserDetail(id)
-      console.log(results)
-    },
-    async getUserLevelActions() {
-      const results = await getUserLevel(this.cookie)
-      console.log(results)
-    }
+
   },
   getters: {
   }

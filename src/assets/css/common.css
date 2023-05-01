@@ -1,9 +1,6 @@
-:root {
-  --background-color: #ec4141;
-}
-
 body {
   font-size: 14px;
+  --color-banner: #cc4a4a;
 }
 
 .icon {
@@ -12,4 +9,15 @@ body {
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+}
+
+.w {
+  width: 100%;
+  height: 100%;
+}
+
+/* 版心 */
+.area {
+  width: 1200px;
+  margin: 0 auto;
 }
