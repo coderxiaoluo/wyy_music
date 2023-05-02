@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/home'
+      redirect: '/home/recommend'
     },
     {
       name: "home",
@@ -13,37 +13,55 @@ const router = createRouter({
       component: () => import("../views/home/Home.vue"),
       children: [
         {
-          path: '/home',
-          redirect: '/home/recommend'
+          name: "home",
+          path: "",
+          component: () => import("../views/home/discover/TabBar/TabBar.vue"),
+          children: [
+            {
+              path: '/home',
+              redirect: '/home/recommend'
+            },
+            {
+              name: "home/recommend",
+              path: "/home/recommend",
+              component: () => import("../views/home/discover/c-cpns/recommend/ReCommend.vue"),
+            },
+            {
+              name: "musiclist",
+              path: "/home/musiclist",
+              component: () => import("../views/home/discover/c-cpns/musiclist/MusicList.vue"),
+            },
+            {
+              name: "ranking",
+              path: "/home/ranking",
+              component: () => import("../views/home/discover/c-cpns/ranking/RanKing.vue"),
+            },
+            {
+              name: "singer",
+              path: "/home/singer",
+              component: () => import("../views/home/discover/c-cpns/singer/SinGer.vue"),
+            },
+          ]
         },
         {
-          path: "recommend",
-          component: () => import("../views/home/recommend/ReCommend.vue")
-        },
-        {
-          path: "musiclist",
-          component: () => import("../views/home/musiclist/MusicList.vue")
-        },
-        {
-          path: "ranking",
-          component: () => import("../views/home/ranking/RanKing.vue")
-        },
-        {
-          path: "singer",
-          component: () => import("../views/home/singer/SinGer.vue")
+          name: "video",
+          path: "/video",
+          component: () => import("../views/home/video/Video.vue"),
         },
       ]
     },
+
     {
       path: "notfound",
       path: "/:pathMatch(.*)",
       component: () => import("../views/notfound/NotFound.vue")
     },
-    {
-      name: "recommend",
-      path: "/recommend",
-      component: () => import("../views/recommend/Recommend.vue")
-    },
+    // {
+    //   name: "video",
+    //   path: "/video",
+    //   component: () => import("../views/video/Video.vue")
+    // },
+
   ]
 })
 

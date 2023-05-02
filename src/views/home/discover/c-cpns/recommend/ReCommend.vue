@@ -45,7 +45,6 @@ import { useRecommendStore } from "@/stores/recommend";
 import { ArrowRight } from "@element-plus/icons-vue";
 import { formatePayCount } from "@/utils/formatplay";
 import { Headset, VideoPlay } from "@element-plus/icons-vue";
-
 const recommendStore = useRecommendStore();
 const { banners, songList } = storeToRefs(recommendStore);
 </script>
@@ -99,7 +98,7 @@ const { banners, songList } = storeToRefs(recommendStore);
         width: 200px;
         height: 250px;
         margin: 20px 0;
-        border-radius: 5px;
+        border-radius: 10px;
         border: 1px solid transparent;
         overflow: hidden;
         cursor: pointer;

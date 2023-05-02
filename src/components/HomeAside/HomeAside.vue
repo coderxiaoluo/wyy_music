@@ -1,28 +1,28 @@
 <template>
   <div class="home-aside">
     <ul>
-      <li>
-        <el-icon class="icon"><Service /></el-icon>
-        <span>发现音乐</span>
-      </li>
-      <li>
-        <el-icon class="icon"><Service /></el-icon>
-        <span>视频</span>
-      </li>
-      <li>
-        <el-icon class="icon"><Service /></el-icon>
-        <span>收藏</span>
-      </li>
-      <li>
-        <el-icon class="icon"><Service /></el-icon>
-        <span>每日推荐</span>
-      </li>
+      <template v-for="item in asideList" :key="item.id">
+        <li @click="handlePageClick(item)">
+          <el-icon class="icon">
+            <component :is="item.icon"></component>
+          </el-icon>
+          <span>{{ item.value }}</span>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { Service } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
+import { asideList } from "@/assets/data/aside";
+
+const router = useRouter();
+const handlePageClick = (v) => {
+  router.push({
+    path: v.path,
+  });
+};
 </script>
 
 <style lang="less" scoped>

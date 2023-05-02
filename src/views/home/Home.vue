@@ -12,7 +12,6 @@
         </el-aside>
         <el-container>
           <el-main>
-            <TabBar />
             <router-view></router-view>
           </el-main>
         </el-container>
@@ -24,8 +23,12 @@
 <script setup>
 import HomeHeader from "@/components/HomeHeader/HomeHeader.vue";
 import HomeAside from "../../components/HomeAside/HomeAside.vue";
-import TabBar from "../../components/TabBar/TabBar.vue";
 import { useRecommendStore } from "@/stores/recommend";
+
+import { useMusicListStore } from "@/stores/musiclist";
+const musiclistStore = useMusicListStore();
+musiclistStore.getHotPlayListDataAction();
+
 const recommendStore = useRecommendStore();
 // 轮播图
 recommendStore.getBannerDataAction();

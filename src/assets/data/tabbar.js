@@ -18,5 +18,6 @@ export const tabbar = [
     id: 4,
     value: "歌手",
     name: 'singer'
-  },
+  }
+
 ]

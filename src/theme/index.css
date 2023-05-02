@@ -2,8 +2,10 @@
   --background-color: #ec4141;
   --color-white-primary: #ffffff;
   --color-black-primary: #000000;
+  --color-tags: #cccccc;
 }
 
 body.dark {
   --background-color: #222225;
+  --color-tags: #352c2c;
 }
