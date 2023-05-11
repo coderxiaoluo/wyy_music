@@ -1,7 +1,17 @@
 <template>
-  <div class="video">video</div>
+  <div class="video"></div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+let currentindex = ref(0);
+const hanleClick = (v) => {
+  currentindex.value = v;
+};
+</script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.active {
+  color: red;
+}
+</style>

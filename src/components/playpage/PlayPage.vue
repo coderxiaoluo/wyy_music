@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">发现</div>
+  <div class="play-page">123123</div>
 </template>
 
 <script setup></script>

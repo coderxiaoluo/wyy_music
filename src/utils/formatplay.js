@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 
 export function formatePayCount(count) {
   var counter = parseInt(count)
@@ -10,16 +11,32 @@ export function formatePayCount(count) {
   return counter + "";
 }
 
-
+// 播放时间处理
 function padLeftZore(time) {
   time = time + "";
   return ("00" + time).slice(time.length);
 }
-
 export function formatDuration(duration) {
   duration = duration / 1000;
   var minute = Math.floor(duration / 60);
   var second = Math.floor(duration) % 60;
   return padLeftZore(minute) + ":" + padLeftZore(second);
 }
+
+export function currentDuration(duration) {
+  var minute = Math.floor(duration / 60);
+  var second = Math.floor(duration) % 60;
+  return padLeftZore(minute) + ":" + padLeftZore(second);
+}
+
+//  时间格式化处理
+export function formatMonthDay(date, initialize) {
+  return dayjs(date).locale("zh-cn").format(initialize)
+}
+
+// 时间之差
+export function getDiffDays(startDate, endDate) {
+  return dayjs(endDate).diff(startDate, "day")
+}
+
 

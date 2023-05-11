@@ -1,6 +1,9 @@
 import axios from "axios";
 import { BASE_URL, TIMEOUT } from "./config";
-
+// import local from "../../utils/local";
+import NProgress from 'nprogress'
+// 引入对应css样式
+import 'nprogress/nprogress.css'
 class lRequest {
   constructor(baseURL, timeout = 10000) {
     this.instance = axios.create({
@@ -9,13 +12,16 @@ class lRequest {
     })
     // 网络拦截器
     this.instance.interceptors.request.use(config => {
+      NProgress.start()
       return config
     }, err => {
       return err
     })
     this.instance.interceptors.response.use(res => {
+      NProgress.done()
       return res
     }, err => {
+      NProgress.done()
       return err
     })
   }

@@ -2,35 +2,49 @@
   <div class="navBar">
     <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
       <template v-for="item in tabbar" :key="item.id">
-        <el-tab-pane :label="item.value" :name="item.name">
-          <router-view></router-view>
-        </el-tab-pane>
+        <el-tab-pane :label="item.value" :name="item.name"> </el-tab-pane>
       </template>
     </el-tabs>
+    <router-view></router-view>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { tabbar } from "@/assets/data/tabbar";
 import { useMusicListStore } from "@/stores/musiclist";
-
-const activeName = ref("recommend");
+import { useTopListStore } from "@/stores/toplist";
+import local from "@/utils/local";
 
 const router = useRouter();
-// 切换路由
-const handleClick = (active) => {
-  router.push({
-    path: active.props.name,
-  });
+const route = useRoute();
+
+// 处理tabbar业务逻辑
+const activeName = ref(local.getLocalCache("routerActiveName") ?? "recommend");
+const handleClick = (v) => {
+  local.setLocalCache("routerActiveName", v.props.name);
+  const localActiveName = local.getLocalCache("routerActiveName");
+  activeName.value = localActiveName;
+  router.push(localActiveName);
 };
+watch(route, (newvalue) => {
+  local.setLocalCache(
+    "routerActiveName",
+    newvalue.path.split("/")[newvalue.path.split("/").length - 1]
+  );
+  activeName.value = local.getLocalCache("routerActiveName");
+});
+
 // 发送请求
 const musiclistStore = useMusicListStore();
 musiclistStore.getHotPlayListDataAction();
 musiclistStore.getCatListDataAction();
-// musiclistStore.getHighquaLityDataAction();
-musiclistStore.getTopPLayListOrder();
+
+//排行榜
+const topListStore = useTopListStore();
+topListStore.topRankingListAction();
+topListStore.artistListAction();
 </script>
 
 <style lang="less" scoped>

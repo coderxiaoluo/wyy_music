@@ -1,51 +1,53 @@
 <template>
   <div class="music-list w area">
     <!-- 精品歌单 -->
-    <div class="highqualityEntry area">
-      <img src="@/assets/img/playlist.jpg" alt="" class="bgcImage" />
+    <div
+      @click="handlePageBoutiqueClick"
+      v-if="currentName != '综艺'"
+      class="highqualityEntry area"
+    >
+      <img :src="FirstBoutiqueDataList?.coverImgUrl" alt="" class="bgcImage" />
       <div class="cover">
-        <img src="@/assets/img/playlist.jpg" alt="" />
+        <img :src="FirstBoutiqueDataList?.coverImgUrl" alt="" />
       </div>
       <div class="EntryInfo">
         <div class="tag">
           <el-icon><MostlyCloudy /></el-icon>
           <span>精品歌单</span>
         </div>
-        <div class="text">华语独立乐团 | 将温柔塞满黄昏</div>
+        <div class="text">{{ FirstBoutiqueDataList?.name }}</div>
       </div>
     </div>
-
     <!-- 标签列表 -->
     <div class="musicListNavBar">
       <!-- 左边内容 -->
       <div class="left-list">
         <el-button @click="handleChangeClick" class="button" round>
-          <span class="button">全部歌单</span>
+          <span class="button">{{ currentName }}</span>
           <el-icon><ArrowRight /> </el-icon>
         </el-button>
         <!-- 全部歌单 -->
         <div v-show="isDisplay" class="tooltip">
           <div class="allbutton">
-            <span class="active">全部歌单</span>
+            <span
+              @click="onChangeCategoriesListAllClick"
+              :class="{ active: currentName === '全部歌单' }"
+            >
+              全部歌单
+            </span>
             <el-divider />
           </div>
-          <!--  -->
+          <!-- singing-list -->
           <div class="singing-list">
-            <ol>
-              <template v-for="(value, key) in categoriesList.categories">
-                <li>
-                  <div class="categories">
-                    <el-icon><Odometer /></el-icon>
-                    <span>{{ value }}</span>
-                  </div>
-                </li>
-              </template>
-            </ol>
             <div class="sub">
               <ul>
-                <template v-for="item in categoriesList.sub">
+                <template v-for="(item, index) in categoriesList.sub">
                   <li>
-                    <span>{{ item.name }}</span>
+                    <span
+                      :class="{ active: currentName === item.name }"
+                      @click="onChangeCategoriesListClick(item)"
+                      >{{ item.name }}</span
+                    >
                   </li>
                 </template>
               </ul>
@@ -56,45 +58,96 @@
       <!-- 右边内容 -->
       <div class="right-list">
         <ul>
-          <template v-for="item in tags" :key="item.id">
-            <li class="active">{{ item.name }}</li>
+          <template v-for="(item, index) in tags" :key="item.id">
+            <li
+              :class="{ active: currentName === item.name }"
+              @click="onChangeDataListClick(item)"
+            >
+              {{ item.name }}
+            </li>
           </template>
         </ul>
       </div>
     </div>
-
     <!-- listCard -->
-    <div class="list-card">
-      <ul>
-        <template v-for="item in playLists" :key="item.id">
-          <li>
-            <img :src="item.coverImgUrl" alt="" />
-            <div class="icons">
-              <el-icon><VideoPlay /></el-icon>
-            </div>
-            <p class="play">
-              <el-icon><Headset /></el-icon>
-              {{ formatePayCount(item?.playCount) }}
-            </p>
-            <el-text class="mx-1">{{ item.name }}</el-text>
-          </li>
-        </template>
-      </ul>
-    </div>
+    <ListCard :cardList="playLists" />
+    <!-- 分页 -->
+    <el-pagination
+      small
+      background
+      layout="prev, pager, next"
+      :total="100"
+      class="mt-4"
+      @prev-click="prevChangeDataListClick"
+      @next-click="nextChangeDataListClick"
+      @current-change="sizeChangeDataListClick"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useMusicListStore } from "@/stores/musiclist";
-import { formatePayCount } from "@/utils/formatplay";
+import ListCard from "@/components/ListCard/ListCard.vue";
 import { storeToRefs } from "pinia";
 const musiclistStore = useMusicListStore();
-const { tags, categoriesList, playLists } = storeToRefs(musiclistStore);
+let currentName = ref("全部歌单");
+
+// 发送网络请求
+musiclistStore.getTopPLayListOrderAction(currentName.value);
+musiclistStore.getBoutiqueDataListAction();
+
+const { tags, categoriesList, playLists, FirstBoutiqueDataList } =
+  storeToRefs(musiclistStore);
+
+// 点击展开与隐藏
 const isDisplay = ref(false);
-console.log(playLists.value);
 const handleChangeClick = () => {
   isDisplay.value = !isDisplay.value;
+};
+
+// 点击发送不同的歌单请求
+const onChangeCategoriesListClick = (v) => {
+  currentName.value = v.name;
+  // 当等于综艺时进行隐藏
+  musiclistStore.getTopPLayListOrderAction(v.name);
+  musiclistStore.getBoutiqueDataListAction(v.name);
+};
+const onChangeDataListClick = (v) => {
+  currentName.value = v.name;
+  // 当等于综艺时进行隐藏
+  musiclistStore.getTopPLayListOrderAction(v.name);
+  musiclistStore.getBoutiqueDataListAction(v.name);
+};
+const onChangeCategoriesListAllClick = () => {
+  currentName.value = "全部歌单";
+  musiclistStore.getTopPLayListOrderAction(currentName.value);
+  musiclistStore.getBoutiqueDataListAction();
+};
+// 分页的请求
+
+// 上一页按钮请求
+const pageIndex = ref(1);
+const prevChangeDataListClick = () => {
+  musiclistStore.getTopPLayListOrderAction(
+    currentName.value,
+    pageIndex.value--
+  );
+};
+// 下一页按钮请求
+const nextChangeDataListClick = () => {
+  musiclistStore.getTopPLayListOrderAction(
+    currentName.value,
+    pageIndex.value++
+  );
+};
+// 点击数字发送请求
+const sizeChangeDataListClick = (v) => {
+  musiclistStore.getTopPLayListOrderAction(currentName.value, v);
+};
+
+const handlePageBoutiqueClick = () => {
+  musiclistStore.getBoutiqueDataListAction();
 };
 </script>
 
@@ -131,7 +184,7 @@ const handleChangeClick = () => {
       width: 150px;
       height: 150px;
       border-radius: 15px;
-      z-index: 999;
+      z-index: 99;
     }
   }
   .EntryInfo {
@@ -178,7 +231,7 @@ const handleChangeClick = () => {
       top: 30px;
       margin-top: 10px;
       width: 700px;
-      height: 800px;
+      // height: 800px;
       background-color: var(--color-white-primary);
       overflow: hidden;
       z-index: 999;
@@ -205,39 +258,40 @@ const handleChangeClick = () => {
         padding: 20px;
         display: flex;
 
-        ol {
-          li {
-            display: flex;
-            margin-top: 10px;
-            .categories {
-              width: 150px;
-              margin-top: 10px;
+        // ol {
+        //   li {
+        //     display: flex;
+        //     margin-top: 10px;
+        //     .categories {
+        //       width: 150px;
+        //       margin-top: 10px;
 
-              .el-icon {
-                vertical-align: middle;
-                font-size: 25px;
-                color: var(--color-tags);
-              }
+        //       .el-icon {
+        //         vertical-align: middle;
+        //         font-size: 25px;
+        //         color: var(--color-tags);
+        //       }
 
-              span {
-                font-size: 12px;
-                margin-left: 5px;
-                color: var(--color-tags);
-              }
-            }
-          }
-        }
+        //       span {
+        //         font-size: 12px;
+        //         margin-left: 5px;
+        //         color: var(--color-tags);
+        //       }
+        //     }
+        //   }
+        // }
 
         .sub {
           ul {
             display: flex;
+            justify-content: flex-start;
+            align-items: center;
             height: 100%;
             width: 100%;
-            margin-top: 10px;
-
             flex-wrap: wrap;
             li {
-              margin-right: 40px;
+              margin: 10px;
+              width: 50px;
               color: var(--color-black-primary);
               font-size: 12px;
               cursor: pointer;
@@ -266,55 +320,11 @@ const handleChangeClick = () => {
   }
 }
 
-// 列表展示
-.list-card {
-  ul {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-
-    li {
-      position: relative;
-      width: 200px;
-      height: 250px;
-      margin: 20px 0;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      overflow: hidden;
-      cursor: pointer;
-      img {
-        width: 100%;
-        height: 200px;
-        margin-bottom: 10px;
-      }
-      .el-text {
-        font-size: 14px;
-        padding: 5px 0;
-        color: var(--color-black-primary);
-      }
-      .play {
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        color: #ffffff;
-        font-size: 12px;
-      }
-      .icons {
-        position: absolute;
-        opacity: 0;
-        right: 7px;
-        bottom: 50px;
-        font-size: 30px;
-        color: var(--background-color);
-        transition: opacity 0.3s linear 0s;
-      }
-      .icons:hover {
-        opacity: 1;
-      }
-      img:hover + .icons {
-        opacity: 1;
-      }
-    }
-  }
+// 分页
+.el-pagination {
+  width: 100%;
+  justify-content: center;
+  margin: 20px 0 50px 0;
+  --el-color-primary: var(--background-color);
 }
 </style>

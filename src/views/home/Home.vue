@@ -6,10 +6,8 @@
         <HomeHeader></HomeHeader>
       </el-header>
       <el-container>
-        <el-aside width="160px">
-          <!-- Aside 侧边栏组件 -->
-          <HomeAside></HomeAside>
-        </el-aside>
+        <!-- Aside 侧边栏组件 -->
+        <el-aside class="aside" width="220"> <HomeAside /></el-aside>
         <el-container>
           <el-main>
             <router-view></router-view>
@@ -21,9 +19,12 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import HomeHeader from "@/components/HomeHeader/HomeHeader.vue";
 import HomeAside from "../../components/HomeAside/HomeAside.vue";
+
 import { useRecommendStore } from "@/stores/recommend";
+import { useUserMusicStore } from "@/stores/usermusic";
 
 import { useMusicListStore } from "@/stores/musiclist";
 const musiclistStore = useMusicListStore();
@@ -34,6 +35,10 @@ const recommendStore = useRecommendStore();
 recommendStore.getBannerDataAction();
 // 推荐歌单
 recommendStore.getRelatedDataListAction();
+
+// 获取创建歌单列表 和 收藏歌单列表
+const userMusicStore = useUserMusicStore();
+userMusicStore.userPlaylistAction();
 </script>
 
 <style lang="less" scoped>
@@ -48,5 +53,11 @@ recommendStore.getRelatedDataListAction();
   height: 60px;
   background-color: var(--background-color);
   color: #fff;
+}
+
+.aside {
+  height: 100%;
+  background-color: var(--color-white-primary);
+  overflow-y: scroll;
 }
 </style>

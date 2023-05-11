@@ -22,11 +22,11 @@ export function getQrlogin(key, time) {
 }
 
 // 登录状态 获取id
-export function getStatus(cooker) {
+export function getStatus(cookie) {
   return lRequest.get({
     url: "/login/status",
     params: {
-      cookie: cooker,
+      cookie: cookie,
       timestamp: new Date().getTime(),
       withCredentials: true
     }

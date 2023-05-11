@@ -1,16 +1,20 @@
-# music_wyy
+# music_wyy_luo
 
-This template should help get you started developing with Vue 3 in Vite.
+技术栈：vue3 + pinia + vue-router
 
-## Recommended IDE Setup
+展示（首页）:
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+![](https://tuchuangs.com/imgs/2023/05/11/f85ed3ea022d0d59.png)
 
-## Customize configuration
+播放页：
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Project Setup
+
+![](https://tuchuangs.com/imgs/2023/05/11/6776b633c4a71441.png)
+
+
+
+![](https://tuchuangs.com/imgs/2023/05/11/53f1570f4693fe70.png)
 
 ```sh
 npm install
@@ -27,3 +31,4 @@ npm run dev
 ```sh
 npm run build
 ```
+

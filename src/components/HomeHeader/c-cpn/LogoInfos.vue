@@ -1,12 +1,25 @@
 <template>
   <div class="logo">
     <h1>
+      <svg class="icon h1icon" aria-hidden="true">
+        <use xlink:href="#icon-music"></use>
+      </svg>
       <img src="@/assets/img/logo.png" alt="" />
     </h1>
     <div class="search">
       <div>
-        <el-button class="btn" :icon="ArrowLeft" circle />
-        <el-button class="btn" :icon="ArrowRight" circle />
+        <el-button
+          class="btn"
+          :icon="ArrowLeft"
+          circle
+          @click="onLeftBackClick"
+        />
+        <el-button
+          class="btn"
+          :icon="ArrowRight"
+          circle
+          @click="onRightBackClick"
+        />
       </div>
       <div class="input">
         <!-- input -->
@@ -30,9 +43,21 @@
 <script setup>
 import { ref } from "vue";
 import { ArrowLeft, ArrowRight, Search } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
 
 // 搜索
 const searchInp = ref("");
+
+// 路由跳转
+const router = useRouter();
+const onLeftBackClick = () => {
+  router.back();
+  // location.reload();
+};
+const onRightBackClick = () => {
+  router.forward();
+  // location.reload();
+};
 </script>
 
 <style lang="less" scoped>
@@ -44,13 +69,23 @@ const searchInp = ref("");
   justify-content: space-between;
 }
 h1 {
+  position: relative;
+  left: 0;
   height: 100%;
+  width: 150px;
+  font-size: 20px;
   display: flex;
   align-items: center;
   margin-right: 20px;
+  cursor: pointer;
   img {
     width: 140px;
     height: 35px;
+  }
+  .h1icon {
+    position: absolute;
+    left: -6px;
+    top: 10px;
   }
 }
 .search {

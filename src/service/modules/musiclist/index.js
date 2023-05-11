@@ -1,11 +1,5 @@
 import lRequest from "../../request/index"
 
-//  精品歌单标签列表
-export function getHighquaLityData() {
-  return lRequest.get({
-    url: "/playlist/highquality/tags"
-  })
-}
 
 // 歌单分类
 export function getCatListData() {
@@ -22,10 +16,22 @@ export function getHotPlayListData() {
 }
 
 // 歌单(网友精选)
-export function getTopPLayListOrder() {
+export function getTopPLayListOrder(name, num = 0) {
   return lRequest.get({
-
-    url: `/top/playlist?limit=100&cat=${"华语"}`
+    url: `/top/playlist?limit=100&order=cat&cat=${name}&offset=${num * 100}`
   })
 }
-// 'top/playlist?limit=10&order=new
+
+//  精品歌单标签列表
+export function getHighquaLityData() {
+  return lRequest.get({
+    url: "/playlist/highquality/tags"
+  })
+}
+export function getBoutiqueDataList(cat = '华语') {
+  return lRequest.get({
+    url: `/top/playlist/highquality?cat=${cat}`
+  })
+}
+
+

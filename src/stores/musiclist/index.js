@@ -1,7 +1,5 @@
 import { defineStore } from "pinia";
-import { getCatListData, getHighquaLityData, getHotPlayListData, getTopPLayListOrder } from "@/service"
-import local from "../../utils/local";
-
+import { getCatListData, getHighquaLityData, getHotPlayListData, getTopPLayListOrder, getBoutiqueDataList } from "@/service"
 
 export const useMusicListStore = defineStore("musiclist", {
   state: () => {
@@ -12,7 +10,9 @@ export const useMusicListStore = defineStore("musiclist", {
       // 列表标签
       categoriesList: [],
       // 歌单列表
-      playLists: []
+      playLists: [],
+      // 精品歌单第一个
+      FirstBoutiqueDataList: {}
     }
   },
   actions: {
@@ -27,14 +27,19 @@ export const useMusicListStore = defineStore("musiclist", {
       this.highqualist = result
       // console.log(result)
     },
+    async getBoutiqueDataListAction(cat) {
+      const result = await getBoutiqueDataList(cat)
+      this.BoutiqueDataList = result
+      this.FirstBoutiqueDataList = result.playlists[0]
+    },
     // 热门歌单分类
     async getHotPlayListDataAction() {
       const result = await getHotPlayListData()
       this.tags = result.tags
     },
     // 歌单(网友精选)
-    async getTopPLayListOrder() {
-      const result = await getTopPLayListOrder()
+    async getTopPLayListOrderAction(name, num) {
+      const result = await getTopPLayListOrder(name, num)
       this.playLists = result.playlists
     }
   },

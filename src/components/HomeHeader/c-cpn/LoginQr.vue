@@ -49,6 +49,7 @@ const exitClick = () => {
   padding: 20px;
   text-align: center;
   color: var(--color-black-primary);
+  z-index: 9999;
 
   .text {
     text-align: center;

@@ -142,7 +142,6 @@ import { userLoginStore } from "@/stores/login/index";
 
 const loginStores = userLoginStore();
 const { unikey, isShow, profile } = storeToRefs(loginStores);
-
 // 扫码登录
 const handleLoginClick = () => {
   loginStores.getCreateUserAction(unikey.value);

@@ -13,6 +13,8 @@ import UserInfos from "./c-cpn/UserInfos.vue";
 import LogoInfos from "./c-cpn/LogoInfos.vue";
 import LoginQr from "./c-cpn/LoginQr.vue";
 import { userLoginStore } from "@/stores/login/index";
+import { useUserInfo } from "@/stores/user";
+
 import local from "@/utils/local";
 const loginStores = userLoginStore();
 if (!local.getLocalCache("cookie")) {
