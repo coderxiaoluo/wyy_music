@@ -64,6 +64,7 @@ const handleHighquaLityMusic = (item) => {
         margin-bottom: 10px;
         border-radius: 10px;
       }
+
       .el-text {
         font-size: 14px;
         padding: 5px 0;

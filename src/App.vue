@@ -1,17 +1,15 @@
 <template>
-  <div class="app">
-    <!-- 入场动画 -->
+  <!--  @contextmenu.prevent="contextInfos" -->
+  <div class="app" @contextmenu.prevent="contextInfos">
     <!-- animate__animated animate__lightSpeedInLeft -->
     <!-- 路由 -->
     <router-view></router-view>
-    <BottomControl />
+    <!-- <BottomControl /> -->
   </div>
 </template>
 
 <script setup>
 import { onMounted } from "vue";
-import BottomControl from "@/components/bottomcontrol/BottomControl.vue";
-
 import WOW from "wow.js";
 onMounted(() => {
   new WOW().init();
@@ -19,6 +17,10 @@ onMounted(() => {
 
 //
 document.onselectstart = (e) => e.preventDefault();
+
+const contextInfos = () => {
+  console.log(1);
+};
 </script>
 
 <style lang="less" scoped>

@@ -143,11 +143,11 @@ musicDetailStore.getCommentIdAction(routerId.value);
 const { DetailData, songsAll, commentsAll, subScribersAll } =
   storeToRefs(musicDetailStore);
 // 拿到 DetailData 里面的 playlist数据
-const playlist = computed(() => DetailData.value.playlist);
+const playlist = computed(() => DetailData.value?.playlist);
 // 设置标签
-const tags = computed(() => playlist.value.tags.join("/"));
+const tags = computed(() => playlist.value?.tags.join("/"));
 // 拿到 DetailData 里面的 privileges 数据
-const privileges = computed(() => DetailData.value.privileges);
+const privileges = computed(() => DetailData.value?.privileges);
 // 切换tab
 const activeName = ref(local.getLocalCache("activeName") ?? "musiclist");
 const handleChangeClick = (v) => {

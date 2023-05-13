@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
-import { getLogin, getCreateUser, getQrlogin, getStatus } from "@/service"
+import { getLogin, getCreateUser, getQrlogin, getStatus, logoutData } from "@/service"
 import local from "../../utils/local";
+import { useUserMusicStore } from "@/stores/usermusic";
+const userMusicStore = useUserMusicStore();
 import { ElMessage } from 'element-plus'
 
 export const userLoginStore = defineStore("login", {
@@ -33,12 +35,15 @@ export const userLoginStore = defineStore("login", {
         const results = await getQrlogin(this.unikey, new Date().getTime())
         // 登录成功
         if (results.code === 803) {
+          // 提示
+          ElMessage('登录成功!')
           // 存储cookie
           local.setLocalCache("cookie", results.cookie)
           this.cookie = results.cookie
           this.isShow = false
-          // 提示
-          ElMessage('登录成功!')
+
+          userMusicStore.userPlaylistAction()
+
           // 获取用户id
           this.getStatusActions()
           // 停止请求
@@ -64,6 +69,13 @@ export const userLoginStore = defineStore("login", {
       local.setLocalCache("account", results.data.account)
       local.setLocalCache("profile", results.data.profile)
     },
+
+    async logoutDataAction() {
+      const result = await logoutData()
+      if (result.code == 200) {
+        return result
+      }
+    }
 
   },
   getters: {

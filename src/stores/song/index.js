@@ -30,6 +30,7 @@ export const useSongStore = defineStore("song", {
     // 点击音乐将音乐存储起来
     storageMusic(v) {
       this.playMusic = v
+      console.log(v)
     },
     // 双击获取全部歌单
     getSongMusicAction(v) {

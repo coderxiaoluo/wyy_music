@@ -17,20 +17,20 @@
           }}</el-text>
         </el-col>
         <!-- 用户详情 -->
-        <div v-if="false" class="details">
+        <div v-if="isShowUserInfos" class="details">
           <!-- 动态 关注 粉丝 签到 -->
           <div class="fans-box-top">
             <div class="fans-box">
               <div class="boxs trend">
-                <span class="num">0</span>
+                <span class="num">{{ userData.profile?.sCount }}</span>
                 <span class="text">动态</span>
               </div>
               <div class="boxs follow">
-                <span class="num">0</span>
+                <span class="num">{{ userData.profile?.follows }}</span>
                 <span class="text">关注</span>
               </div>
               <div class="boxs fans">
-                <span class="num">0</span>
+                <span class="num">{{ userData.profile?.followeds }}</span>
                 <span class="text">粉丝</span>
               </div>
             </div>
@@ -42,73 +42,20 @@
           <!-- 我的会员 等等... -->
           <div class="member-box-bottom">
             <ol>
-              <li>
-                <div class="descript">
-                  <el-icon class="icons"><Medal /></el-icon>
-                  <span>我的会员</span>
-                </div>
-                <div class="other">
-                  <span>到期</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </li>
-              <li>
-                <div class="descript">
-                  <el-icon class="icons"><Medal /></el-icon>
-                  <span>我的会员</span>
-                </div>
-                <div class="other">
-                  <span>到期</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </li>
-              <li>
-                <div class="descript">
-                  <el-icon class="icons"><Medal /></el-icon>
-                  <span>我的会员</span>
-                </div>
-                <div class="other">
-                  <span>到期</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </li>
-              <li>
-                <div class="descript">
-                  <el-icon class="icons"><Medal /></el-icon>
-                  <span>我的会员</span>
-                </div>
-                <div class="other">
-                  <span>到期</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </li>
-              <li>
-                <div class="descript">
-                  <el-icon class="icons"><Medal /></el-icon>
-                  <span>我的会员</span>
-                </div>
-                <div class="other">
-                  <span>到期</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </li>
-              <li>
-                <div class="descript">
-                  <el-icon class="icons"><Medal /></el-icon>
-                  <span>我的会员</span>
-                </div>
-                <div class="other">
-                  <span>到期</span>
-                  <el-icon><ArrowRight /></el-icon>
-                </div>
-              </li>
-              <!-- 退出登录 -->
-              <li @click="logoutClick">
-                <div class="descript">
-                  <el-icon><SwitchButton /></el-icon>
-                  <span>退出登录</span>
-                </div>
-              </li>
+              <template v-for="item in descList">
+                <li @click="userInfosClick(item)">
+                  <div class="descript">
+                    <el-icon class="icons">
+                      <component :is="item.icon"></component>
+                    </el-icon>
+                    <span>{{ item.text }}</span>
+                  </div>
+                  <div class="other">
+                    <span v-if="item.id == 2">{{ userData.level }}级</span>
+                    <el-icon><ArrowRight /></el-icon>
+                  </div>
+                </li>
+              </template>
             </ol>
           </div>
         </div>
@@ -127,21 +74,19 @@
 </template>
 
 <script setup>
-import {
-  UserFilled,
-  Message,
-  Setting,
-  Menu,
-  Medal,
-  SwitchButton,
-  ArrowRight,
-} from "@element-plus/icons-vue";
-import { reactive } from "vue";
+import { ref, reactive } from "vue";
 import { storeToRefs } from "pinia";
 import { userLoginStore } from "@/stores/login/index";
-
+import { descList } from "@/assets/data/descriptList";
+import { UserFilled } from "@element-plus/icons-vue";
+import { useUserInfo } from "@/stores/user";
+import local from "@/utils/local";
 const loginStores = userLoginStore();
 const { unikey, isShow, profile } = storeToRefs(loginStores);
+
+const useInfosStore = useUserInfo();
+const { userData } = storeToRefs(useInfosStore);
+console.log(userData);
 // 扫码登录
 const handleLoginClick = () => {
   loginStores.getCreateUserAction(unikey.value);
@@ -149,11 +94,23 @@ const handleLoginClick = () => {
   isShow.value = true;
 };
 
-// 退出登录
-const logoutClick = () => {};
 // 获取用户 动态
+const isShowUserInfos = ref(false);
 const handleLevelClick = () => {
-  console.log("用户详情");
+  isShowUserInfos.value = !isShowUserInfos.value;
+};
+
+// 相关点击
+const userInfosClick = (v) => {
+  console.log(v);
+  // 退出登录
+  if (v.id == 6) {
+    const res = loginStores.logoutDataAction();
+    res.then(() => {
+      local.clearLocal();
+      location.reload();
+    });
+  }
 };
 </script>
 
@@ -203,7 +160,7 @@ const handleLevelClick = () => {
     .nickname::after {
       position: absolute;
       bottom: 3px;
-      right: -5px;
+      right: -1px;
       content: "";
       width: 0px;
       height: 0px;
@@ -233,6 +190,7 @@ ul {
       width: 250px;
       background-color: #fff;
       box-shadow: 5px 5px 5px 5px #ccc;
+      z-index: 99;
 
       // top style
       .fans-box-top {
@@ -290,6 +248,7 @@ ul {
             width: 100%;
             height: 35px;
             line-height: 35px;
+            cursor: pointer;
             .descript {
               display: flex;
               text-align: center;

@@ -14,7 +14,7 @@
 
     <!-- 音乐 -->
     <div class="left">
-      <div v-if="playMusic.al" class="avatar">
+      <div v-if="playMusic.al" class="avatar" @click="handleRecordClick">
         <img :src="playMusic.al?.picUrl" alt="" />
         <i
           ><el-icon><ArrowUpBold /></el-icon
@@ -36,10 +36,6 @@
     <div class="center">
       <div class="buttons">
         <span>
-          <!-- <svg class="icon playicon" aria-hidden="true">
-            <use xlink:href="#icon-icon__xunhuan"></use>
-          </svg> -->
-          <!-- icon-shunxubofang -->
           <svg
             @click="onchangeMusicList"
             class="icon playicon"
@@ -54,7 +50,7 @@
             class="icon playicon"
             aria-hidden="true"
           >
-            <use xlink:href="#icon-shangyishou"></use>
+            <use xlink:href="#icon-shangyishou1"></use>
           </svg>
         </span>
         <!-- 暂停和播放 -->
@@ -65,7 +61,7 @@
             class="icon playicon"
             aria-hidden="true"
           >
-            <use xlink:href="#icon-zanting1"></use>
+            <use xlink:href="#icon-zanting2"></use>
           </svg>
           <svg
             @click="playPause(true)"
@@ -73,12 +69,12 @@
             class="icon playicon"
             aria-hidden="true"
           >
-            <use xlink:href="#icon-bofang"></use>
+            <use xlink:href="#icon-kaishi"></use>
           </svg>
         </span>
         <span>
           <svg @click="nextMusicClick" class="icon playicon" aria-hidden="true">
-            <use xlink:href="#icon-xiayishou"></use>
+            <use xlink:href="#icon-xiayishou1"></use>
           </svg>
         </span>
       </div>
@@ -113,7 +109,7 @@
       <div class="volumeControl">
         <!-- 音量 -->
         <svg class="icon volumeicon" aria-hidden="true">
-          <use xlink:href="#icon-shengyin"></use>
+          <use xlink:href="#icon-yinliang"></use>
         </svg>
         <!-- 音量 滑块-->
         <el-slider
@@ -134,6 +130,8 @@
           </svg>
         </div>
       </div>
+      <!-- 备案 -->
+      <div class="filings">渝ICP备20230613号</div>
     </div>
 
     <!-- 抽屉 -->
@@ -196,6 +194,7 @@
 import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useSongStore } from "@/stores/song";
+import { useRecordStore } from "@/stores/record";
 import local from "@/utils/local";
 import { formatDuration, currentDuration } from "@/utils/formatplay";
 import { randomMusic } from "@/utils/random";
@@ -205,8 +204,16 @@ const songStore = useSongStore();
 const { playMusic, songUrl, isShowPlay, isDrawer, songMusicAll } =
   storeToRefs(songStore);
 
+const recordStore = useRecordStore();
+// 展开唱片页
+const { isRecordPage, lyricTime } = storeToRefs(recordStore);
+
 // 设置顺序播放  / 循环播放 / 随机播放
-const svgArr = ["#icon-shunxubofang", "#icon-danquxunhuan", "#icon-suiji"];
+const svgArr = [
+  "#icon-shunxubofang",
+  "#icon-danquxunhuan",
+  "#icon-suijibofang1",
+];
 let svgIndex = ref(0);
 const onchangeMusicList = () => {
   svgIndex.value++;
@@ -236,10 +243,14 @@ function tableRowClassName({ row, rowIndex }) {
     return "";
   }
 }
-
 // 滑块进度条业务逻辑
 const sliderbar = ref(0);
 let currentTimes = ref(0);
+
+// 当进度条改变了将值存储再store中 ，在唱片页中进行歌词匹配
+watch(currentTimes, (newvalue) => {
+  lyricTime.value = newvalue;
+});
 // 当前时间
 const currentTime = ref(audioEl.value?.currentTime);
 // 总时间
@@ -270,7 +281,7 @@ function onTimeupDateMusic() {
 
 /* 音量业务逻辑  */
 const onInputVolume = (v) => {
-  local.setLocalCache("locVolume", v / 100);
+  local.setLocalCache("locVolume", (v / 100).toFixed(1));
 };
 
 // 播放/暂停
@@ -306,7 +317,11 @@ function overAudio() {
     songStore.getSongUrlAction(
       songMusicAll.value[playMusic.value.index + 1].id
     );
+    // 发送请求 获取歌词
+    recordStore.getLyricDataAction(playMusic.value.id);
     playMusic.value = songMusicAll.value[playMusic.value.index + 1];
+    // 拿到歌词
+    recordStore.getLyricDataAction(playMusic.value.id);
   }
   // 2 表示单曲循环
   if (svgIndex.value == 1) {
@@ -318,6 +333,8 @@ function overAudio() {
     let random = randomMusic(0, songMusicAll.value.length - 1);
     songStore.getSongUrlAction(songMusicAll.value[random].id);
     playMusic.value = songMusicAll.value[random];
+    // 拿到歌词
+    recordStore.getLyricDataAction(playMusic.value.id);
   }
 }
 
@@ -345,6 +362,8 @@ const previousMusicClick = () => {
       songMusicAll.value[playMusic.value.index - 1].id
     );
     playMusic.value = songMusicAll.value[playMusic.value.index - 1];
+    // 拿到歌词
+    recordStore.getLyricDataAction(playMusic.value.id);
   }
   // 2 表示单曲循环
   if (svgIndex.value == 1) {
@@ -356,6 +375,8 @@ const previousMusicClick = () => {
     let random = randomMusic(0, songMusicAll.value.length - 1);
     songStore.getSongUrlAction(songMusicAll.value[random].id);
     playMusic.value = songMusicAll.value[random];
+    // 拿到歌词
+    recordStore.getLyricDataAction(playMusic.value.id);
   }
 };
 // 下一首
@@ -367,6 +388,8 @@ const nextMusicClick = () => {
       songMusicAll.value[playMusic.value.index + 1].id
     );
     playMusic.value = songMusicAll.value[playMusic.value.index + 1];
+    // 发送请求 获取歌词
+    recordStore.getLyricDataAction(playMusic.value.id);
   }
   // 2 表示单曲循环
   if (svgIndex.value == 1) {
@@ -378,7 +401,14 @@ const nextMusicClick = () => {
     let random = randomMusic(0, songMusicAll.value.length - 1);
     songStore.getSongUrlAction(songMusicAll.value[random].id);
     playMusic.value = songMusicAll.value[random];
+    recordStore.getLyricDataAction(playMusic.value.id);
   }
+};
+
+// 展开唱片功能
+const handleRecordClick = () => {
+  console.log("展开唱片page");
+  isRecordPage.value = !isRecordPage.value;
 };
 </script>
 
@@ -453,11 +483,8 @@ const nextMusicClick = () => {
     display: flex;
     flex-direction: column;
     width: 400px;
-    // justify-content: flex-start;
     justify-self: flex-start;
-    // text-align: center;
-    //
-
+    padding: 10px 0;
     .buttons {
       display: flex;
       justify-content: space-around;
@@ -478,6 +505,7 @@ const nextMusicClick = () => {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 10px;
       // 滑块
       .slider-demo-block {
         display: flex;
@@ -500,22 +528,29 @@ const nextMusicClick = () => {
     width: 400px;
     display: flex;
     justify-content: flex-end;
-    margin-right: 50px;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 20px;
     .volumeControl {
       display: flex;
       align-items: center;
+      height: 50px;
       width: 200px;
-
       .volumeicon {
-        margin: 0 10px;
+        margin: 0 20px;
+        font-size: 30px;
       }
       .playList {
-        margin: 0 10px;
+        margin: 0 20px;
 
         .playicon {
           cursor: pointer;
         }
       }
+    }
+    .filings {
+      font-size: 12px;
+      margin-right: 43px;
     }
   }
 }

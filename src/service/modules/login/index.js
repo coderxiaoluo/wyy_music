@@ -23,6 +23,7 @@ export function getQrlogin(key, time) {
 
 // 登录状态 获取id
 export function getStatus(cookie) {
+  if (!cookie) return
   return lRequest.get({
     url: "/login/status",
     params: {
@@ -30,6 +31,13 @@ export function getStatus(cookie) {
       timestamp: new Date().getTime(),
       withCredentials: true
     }
+  })
+}
+
+
+export function logoutData() {
+  return lRequest.get({
+    url: "/logout"
   })
 }
 

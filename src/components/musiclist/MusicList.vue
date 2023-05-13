@@ -9,6 +9,9 @@
       style="width: 100%"
       @row-dblclick="onplaydbClick"
     >
+      <template #empty>
+        <span>正在加载</span>
+      </template>
       <el-table-column type="index" :index="indexMethod" width="50">
         <template #default="scope">
           <span v-if="playMusic.id !== scope.row.id">{{
@@ -54,9 +57,10 @@ import { storeToRefs } from "pinia";
 import { formatDuration } from "@/utils/formatplay";
 import { useSongStore } from "@/stores/song";
 import { useMusicDetailStore } from "@/stores/musicdetail";
-
+import { useRecordStore } from "@/stores/record";
 const songStore = useSongStore();
 const musicDetailStore = useMusicDetailStore();
+const recordStore = useRecordStore();
 
 // 双击播放才能拿到playMusic和 songUrl
 const { playMusic, isShowPlay, isDrawer } = storeToRefs(songStore);
@@ -90,7 +94,10 @@ const onplaydbClick = (v) => {
   songStore.storageMusic(v);
   // 发送请求 获取音乐url
   songStore.getSongUrlAction(v.id);
-  // songStore.getCheckMusicAction(v.id);
+  // 发送请求 获取歌词
+  recordStore.getLyricDataAction(v.id);
+  // recordStore.getLyricNewDataAction(v.id);
+
   isShowPlay.value = true;
   isDrawer.value = true;
   const { songsAll } = storeToRefs(musicDetailStore);
@@ -109,6 +116,7 @@ const onplaydbClick = (v) => {
   }
   .el-table__cell {
     padding: 20px 0 !important;
+    cursor: pointer;
   }
 }
 

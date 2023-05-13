@@ -1,11 +1,12 @@
 import lRequest from "../../request/index"
 import local from "@/utils/local"
 const cookie = local.getLocalCache("cookie")
-
+const account = local.getLocalCache("account")
 // 获取用户详情
 export function getUserDetail(id) {
+  if (!account) return
   return lRequest.get({
-    url: `/user/detail?uid=${id}`
+    url: `/user/detail?uid=${account.id}`
   })
 }
 

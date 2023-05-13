@@ -28,7 +28,7 @@
               @click="selectPageClick(item)"
               class="item-text"
               index="3-1"
-              v-if="item.creator.djStatus == 10"
+              v-if="item.creator.djStatus == 0"
               ><el-text truncated>{{
                 index == 0 ? (item.name = "我喜欢的音乐") : item.name
               }}</el-text></el-menu-item
@@ -49,7 +49,7 @@
             <el-menu-item
               @click="selectPageClick(item)"
               index="4-1"
-              v-if="item.creator.djStatus == 0"
+              v-if="item.creator.djStatus == 10"
               ><el-text truncated>{{ item.name }}</el-text></el-menu-item
             >
           </template>
