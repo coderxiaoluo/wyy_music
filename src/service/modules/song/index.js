@@ -3,7 +3,7 @@ import local from "@/utils/local";
 const cookie = local.getLocalCache("cookie")
 // 获取音乐URL 
 export function getSongUrl(id) {
-  if (!cookie) return
+  if (!id) return
   return lRequest.get({
     url: `/song/url?id=${id}`,
     params: {

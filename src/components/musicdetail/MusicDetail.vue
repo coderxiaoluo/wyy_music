@@ -25,7 +25,11 @@
         </div>
         <!-- 三个按钮 -->
         <div class="buttons">
-          <el-button class="button1" type="primary" :icon="Search"
+          <el-button
+            @click="onplayClick"
+            class="button1"
+            type="primary"
+            :icon="Search"
             >播放全部</el-button
           >
           <el-button class="button2" type="primary" :icon="CirclePlus"
@@ -122,9 +126,9 @@ const cookie = local.getLocalCache("cookie");
 const route = useRoute();
 const musicDetailStore = useMusicDetailStore();
 // 相关歌单推荐请求
-
 const routerId = ref(route.params.id);
 // 获取所有歌单
+console.log(routerId.value);
 musicDetailStore.getTrackAllDataAction(routerId.value);
 // 获取歌单所有的收藏的人
 musicDetailStore.getSubscribesAllAction(routerId.value);
@@ -142,8 +146,10 @@ musicDetailStore.getCommentIdAction(routerId.value);
 */
 const { DetailData, songsAll, commentsAll, subScribersAll } =
   storeToRefs(musicDetailStore);
+
 // 拿到 DetailData 里面的 playlist数据
 const playlist = computed(() => DetailData.value?.playlist);
+console.log(playlist);
 // 设置标签
 const tags = computed(() => playlist.value?.tags.join("/"));
 // 拿到 DetailData 里面的 privileges 数据
@@ -160,6 +166,10 @@ const searchKeywords = ref("");
 // 评论分页
 const emitCommentPageClick = (v) => {
   musicDetailStore.getCommentIdAction(routerId.value, v - 1);
+};
+// 播放全部业务逻辑
+const onplayClick = (v) => {
+  console.log(v);
 };
 </script>
 

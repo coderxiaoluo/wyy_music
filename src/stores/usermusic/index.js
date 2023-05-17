@@ -8,9 +8,8 @@ export const useUserMusicStore = defineStore("usermusic", {
     }
   },
   actions: {
-    async userPlaylistAction() {
-      const result = await userPlaylist()
-      if (!result) return
+    async userPlaylistAction(id) {
+      const result = await userPlaylist(id)
       this.createdList = result.playlist
     }
   },

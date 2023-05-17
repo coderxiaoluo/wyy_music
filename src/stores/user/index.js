@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { getUserDetail, getUserLevel, getUserSubcount, getUserBinding } from "@/service"
 import local from "@/utils/local";
-const cookie = local.getLocalCache("cookie")
 
 export const useUserInfo = defineStore("user", {
   state: () => {

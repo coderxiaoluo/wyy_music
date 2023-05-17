@@ -16,8 +16,11 @@
     <div class="left">
       <div v-if="playMusic.al" class="avatar" @click="handleRecordClick">
         <img :src="playMusic.al?.picUrl" alt="" />
-        <i
+        <i v-if="!isRecordPage"
           ><el-icon><ArrowUpBold /></el-icon
+        ></i>
+        <i v-else
+          ><el-icon><ArrowDownBold /></el-icon
         ></i>
       </div>
       <div v-else class="desc">初听不知曲中意 再听已是曲中人</div>
@@ -108,7 +111,7 @@
       <!-- icon-bofangliebiao -->
       <div class="volumeControl">
         <!-- 音量 -->
-        <svg class="icon volumeicon" aria-hidden="true">
+        <svg @click="onVolumeClick" class="icon volumeicon" aria-hidden="true">
           <use xlink:href="#icon-yinliang"></use>
         </svg>
         <!-- 音量 滑块-->
@@ -203,7 +206,6 @@ const songStore = useSongStore();
 // 双击播放才能拿到playMusic和 songUrl / songMusicAll
 const { playMusic, songUrl, isShowPlay, isDrawer, songMusicAll } =
   storeToRefs(songStore);
-
 const recordStore = useRecordStore();
 // 展开唱片页
 const { isRecordPage, lyricTime } = storeToRefs(recordStore);
@@ -355,6 +357,7 @@ function onplaydbDrawerClick(v) {
 
 // 上一首
 const previousMusicClick = () => {
+  if (isShowPlay.value == null) return;
   if (playMusic.value.index == 0) return;
   // 0 表示顺序播放
   if (svgIndex.value == 0) {
@@ -381,6 +384,7 @@ const previousMusicClick = () => {
 };
 // 下一首
 const nextMusicClick = () => {
+  if (isShowPlay.value == null) return;
   if (playMusic.value.index == songMusicAll.value.length - 1) return;
   // 0 表示顺序播放
   if (svgIndex.value == 0) {

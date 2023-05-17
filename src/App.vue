@@ -1,10 +1,6 @@
 <template>
-  <!--  @contextmenu.prevent="contextInfos" -->
   <div class="app" @contextmenu.prevent="contextInfos">
-    <!-- animate__animated animate__lightSpeedInLeft -->
-    <!-- 路由 -->
     <router-view></router-view>
-    <!-- <BottomControl /> -->
   </div>
 </template>
 
@@ -15,7 +11,6 @@ onMounted(() => {
   new WOW().init();
 });
 
-//
 document.onselectstart = (e) => e.preventDefault();
 
 const contextInfos = () => {

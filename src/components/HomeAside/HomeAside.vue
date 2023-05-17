@@ -60,7 +60,6 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { asideList } from "@/assets/data/aside";
 import { useUserMusicStore } from "@/stores/usermusic";
@@ -68,6 +67,7 @@ import { storeToRefs } from "pinia";
 import { useMusicDetailStore } from "@/stores/musicdetail";
 
 const userMusicStore = useUserMusicStore();
+
 // cratedList:获取创建歌单和收藏歌单
 const { createdList } = storeToRefs(userMusicStore);
 

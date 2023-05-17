@@ -18,7 +18,17 @@
     <!-- 底部 -->
     <BottomControl />
     <!-- 唱片 -->
-    <Record v-show="isRecordPage" />
+    <el-drawer
+      class="drawer"
+      v-model="drawer"
+      direction="btt"
+      :show-close="false"
+      :with-header="false"
+      size="100%"
+      :z-index="76"
+    >
+      <Record v-show="true" />
+    </el-drawer>
   </div>
 </template>
 
@@ -27,12 +37,13 @@ import { ref } from "vue";
 import Record from "../record/Record.vue";
 import { storeToRefs } from "pinia";
 import HomeHeader from "@/components/HomeHeader/HomeHeader.vue";
-import HomeAside from "../../components/HomeAside/HomeAside.vue";
+import HomeAside from "@/components/HomeAside/HomeAside.vue";
 import BottomControl from "@/components/bottomcontrol/BottomControl.vue";
 import { useRecommendStore } from "@/stores/recommend";
 import { useUserMusicStore } from "@/stores/usermusic";
 import { useMusicListStore } from "@/stores/musiclist";
 import { useRecordStore } from "@/stores/record";
+import { userLoginStore } from "@/stores/login";
 
 const musiclistStore = useMusicListStore();
 musiclistStore.getHotPlayListDataAction();
@@ -42,15 +53,18 @@ const recommendStore = useRecommendStore();
 recommendStore.getBannerDataAction();
 // 推荐歌单
 recommendStore.getRelatedDataListAction();
+const loginStore = userLoginStore();
 
+const { account } = storeToRefs(loginStore);
 // 获取创建歌单列表 和 收藏歌单列表
 const userMusicStore = useUserMusicStore();
-userMusicStore.userPlaylistAction();
+userMusicStore.userPlaylistAction(account.value.id);
 
 // 唱片
 const recordStore = useRecordStore();
-
+// 是否展示唱片页面的变量
 const { isRecordPage } = storeToRefs(recordStore);
+const drawer = ref(isRecordPage);
 </script>
 
 <style lang="less" scoped>
@@ -71,5 +85,12 @@ const { isRecordPage } = storeToRefs(recordStore);
   height: 100%;
   background-color: var(--color-white-primary);
   overflow-y: scroll;
+}
+
+:deep(.drawer) {
+  --el-drawer-padding-primary: 0 !important;
+}
+:deep(.el-drawer__body) {
+  --el-drawer-padding-primary: 0 !important;
 }
 </style>

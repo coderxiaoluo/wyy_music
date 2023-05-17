@@ -51,6 +51,16 @@ const router = createRouter({
           component: () => import("../views/home/video/Video.vue"),
         },
         {
+          name: "personal",
+          path: "/personal/:id",
+          component: () => import("../views/personal/Personal.vue"),
+        },
+        {
+          name: "author",
+          path: "/author",
+          component: () => import("../views/author/Author.vue"),
+        },
+        {
           name: "musicdetail",
           path: "/musicdetail/:id",
           component: () => import("../components/musicdetail/MusicDetail.vue"),

@@ -1,7 +1,5 @@
-import { defineStore, storeToRefs } from "pinia";
+import { defineStore } from "pinia";
 import { getDetailsDataListAll, getTrackAllData, getDynamicDetailId, getCommentId, getSubscribesAll } from "@/service"
-import { useSongStore } from "../song"
-
 
 export const useMusicDetailStore = defineStore("musicdatail", {
   state: () => {

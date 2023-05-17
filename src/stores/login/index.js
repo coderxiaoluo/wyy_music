@@ -2,9 +2,8 @@ import { defineStore } from "pinia";
 import { getLogin, getCreateUser, getQrlogin, getStatus, logoutData } from "@/service"
 import local from "../../utils/local";
 import { useUserMusicStore } from "@/stores/usermusic";
-const userMusicStore = useUserMusicStore();
 import { ElMessage } from 'element-plus'
-
+const userMusicStore = useUserMusicStore();
 export const userLoginStore = defineStore("login", {
   state: () => ({
     unikey: "",
@@ -41,9 +40,6 @@ export const userLoginStore = defineStore("login", {
           local.setLocalCache("cookie", results.cookie)
           this.cookie = results.cookie
           this.isShow = false
-
-          userMusicStore.userPlaylistAction()
-
           // 获取用户id
           this.getStatusActions()
           // 停止请求
@@ -65,6 +61,8 @@ export const userLoginStore = defineStore("login", {
       // 存储用户id
       this.profile = results.data.profile
       this.account = results.data.account
+      // 获取创建歌单列表 和 收藏歌单列表
+      userMusicStore.userPlaylistAction(results.data.account.id);
       //  持久化存储
       local.setLocalCache("account", results.data.account)
       local.setLocalCache("profile", results.data.profile)
